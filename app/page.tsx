@@ -443,7 +443,7 @@ export default function Home() {
         {/* Info Cards */}
         <div className={`mt-12 grid md:grid-cols-3 gap-4 transition-all duration-700 delay-400 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           {[
-            { icon: Key, title: 'Free API Key', desc: '250 searches/month (2,000 papers max)' },
+            { icon: Key, title: 'Free API Key', desc: '250 searches/mo (2,500 papers total)' },
             { icon: Database, title: 'API Usage', desc: '1 search = 10 papers fetched' },
             { icon: FileText, title: 'CSV Export', desc: 'Download with all metadata' },
           ].map(({ icon: Icon, title, desc }, i) => (
