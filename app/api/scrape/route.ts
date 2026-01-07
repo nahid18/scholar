@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       
       const sendEvent = (event: string, data: unknown) => {
         controller.enqueue(
-          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
+          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n\n`)
         );
       };
 
