@@ -208,7 +208,7 @@ export default function Home() {
           </div>
           
           <h1 className="text-4xl md:text-5xl font-mono font-bold text-scholar-text mb-4">
-            <span className="text-glow text-scholar-accent">Scholar</span> Scraper
+            <span className="text-glow text-scholar-accent">Scholar</span> Sky
           </h1>
           
           {/* <p className="text-scholar-muted text-lg max-w-2xl mx-auto">

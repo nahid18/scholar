@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Scholar Scraper | Extract Research Papers",
-  description: "Beautiful Google Scholar paper scraper with real-time progress",
+  title: "Scholar Sky | Extract Research Papers",
+  description: "Extract upto 1000 research papers from Google Scholar",
 };
 
 export default function RootLayout({
