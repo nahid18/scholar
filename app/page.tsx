@@ -154,6 +154,34 @@ export default function Home() {
           }
         }
       }
+
+      const remainingLines = buffer.split('\n');
+      let eventType = '';
+      for (const line of remainingLines) {
+        if (line.startsWith('event: ')) {
+          eventType = line.slice(7);
+        } else if (line.startsWith('data: ') && eventType) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (eventType === 'complete' && data.csv) {
+              setProgress((prev) => ({
+                ...prev,
+                phase: 'complete',
+                totalPapers: data.totalPapers,
+                message: `Successfully scraped ${data.totalPapers} papers!`,
+              }));
+              setCsvData({
+                csv: data.csv,
+                filename: data.filename,
+                totalPapers: data.totalPapers,
+              });
+            }
+          } catch {
+            // Skip malformed JSON
+          }
+        }
+      }
+
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         setProgress((prev) => ({
@@ -290,8 +318,8 @@ export default function Home() {
                     onClick={() => setMaxPapers(limit)}
                     disabled={isSearching}
                     className={`px-4 py-2 rounded-lg font-mono text-sm transition-all disabled:opacity-50 ${maxPapers === limit
-                        ? 'bg-scholar-accent text-scholar-bg glow-accent'
-                        : 'bg-scholar-bg/50 border border-scholar-border text-scholar-muted hover:border-scholar-accent/50 hover:text-scholar-text'
+                      ? 'bg-scholar-accent text-scholar-bg glow-accent'
+                      : 'bg-scholar-bg/50 border border-scholar-border text-scholar-muted hover:border-scholar-accent/50 hover:text-scholar-text'
                       }`}
                   >
                     {limit.toLocaleString()}
