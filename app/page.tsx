@@ -46,7 +46,7 @@ export default function Home() {
   const [maxPapers, setMaxPapers] = useState(100);
   const abortControllerRef = useRef<AbortController | null>(null);
   
-  const paperLimitOptions = [10, 100, 250, 500, 1000];
+  const paperLimitOptions = [10, 100, 500, 1000, 2000];
 
   useEffect(() => {
     setMounted(true);
@@ -212,7 +212,7 @@ export default function Home() {
           </h1>
           
           {/* <p className="text-scholar-muted text-lg max-w-2xl mx-auto">
-            Extract up to 1,000 research papers from Google Scholar
+            Extract up to 2,000 research papers from Google Scholar
           </p> */}
         </div>
 
@@ -445,7 +445,7 @@ export default function Home() {
         <div className={`mt-12 grid md:grid-cols-3 gap-4 transition-all duration-700 delay-400 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           {[
             { icon: Key, title: 'API Key Required', desc: 'Get your free key from SerpAPI' },
-            { icon: Database, title: 'Up to 1,000 Papers', desc: 'Maximum results per search' },
+            { icon: Database, title: 'Up to 2,000 Papers', desc: 'Maximum results per search' },
             { icon: FileText, title: 'CSV Export', desc: 'Download with all metadata' },
           ].map(({ icon: Icon, title, desc }, i) => (
             <div
@@ -463,7 +463,7 @@ export default function Home() {
         {/* Footer */}
         <div className={`mt-12 text-center text-xs text-scholar-muted transition-all duration-700 delay-600 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           <p>
-            Built with Next.js • Powered by{' '}
+            Built with Next.js & Claude Code • Powered by{' '}
             <a
               href="https://serpapi.com"
               target="_blank"

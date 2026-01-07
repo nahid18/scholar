@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Scholar Sky | Extract Research Papers",
-  description: "Extract upto 1000 research papers from Google Scholar",
+  description: "Extract upto 2000 research papers from Google Scholar",
 };
 
 export default function RootLayout({
