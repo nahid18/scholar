@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
           });
 
           // Small delay to avoid rate limiting
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 300));
 
         } catch (error) {
           sendEvent('error', { 
