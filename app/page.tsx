@@ -46,7 +46,7 @@ export default function Home() {
   const [maxPapers, setMaxPapers] = useState(100);
   const abortControllerRef = useRef<AbortController | null>(null);
   
-  const paperLimitOptions = [10, 100, 500, 1000, 2000];
+  const paperLimitOptions = [100, 500, 1000, 2000];
 
   useEffect(() => {
     setMounted(true);
@@ -463,7 +463,7 @@ export default function Home() {
         {/* Footer */}
         <div className={`mt-12 text-center text-xs text-scholar-muted transition-all duration-700 delay-600 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           <p>
-            Built with Next.js & Claude Code • Powered by{' '}
+            Built with Next.js • Powered by{' '}
             <a
               href="https://serpapi.com"
               target="_blank"
