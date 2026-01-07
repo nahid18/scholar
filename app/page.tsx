@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import {
-  Search,
-  Download,
-  Key,
-  FileText,
-  Loader2,
-  CheckCircle2,
+import { 
+  Search, 
+  Download, 
+  Key, 
+  FileText, 
+  Loader2, 
+  CheckCircle2, 
   AlertCircle,
   ExternalLink,
   BookOpen,
@@ -25,7 +25,6 @@ interface ProgressState {
 }
 
 interface CompleteData {
-  csv: string;
   filename: string;
   totalPapers: number;
 }
@@ -45,8 +44,8 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [maxPapers, setMaxPapers] = useState(100);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  const paperLimitOptions = [100, 500, 1000, 2500];
+  
+  const paperLimitOptions = [10, 100, 250, 500, 1000];
 
   useEffect(() => {
     setMounted(true);
@@ -97,14 +96,14 @@ export default function Home() {
           } else if (line.startsWith('data: ') && eventType) {
             try {
               const data = JSON.parse(line.slice(6));
-
+              
               switch (eventType) {
                 case 'status':
                   setProgress((prev) => ({
                     ...prev,
                     message: data.message,
-                    phase: data.phase === 'complete' ? 'complete' :
-                      data.phase === 'generating' ? 'generating' : prev.phase,
+                    phase: data.phase === 'complete' ? 'complete' : 
+                           data.phase === 'generating' ? 'generating' : prev.phase,
                   }));
                   break;
                 case 'progress':
@@ -127,13 +126,12 @@ export default function Home() {
                     ...prev,
                     phase: 'complete',
                     totalPapers: data.totalPapers,
-                    message: data.totalPapers > 0
+                    message: data.totalPapers > 0 
                       ? `Successfully scraped ${data.totalPapers} papers!`
                       : 'No papers found for this search query.',
                   }));
-                  if (data.csv) {
+                  if (data.filename && data.totalPapers > 0) {
                     setCsvData({
-                      csv: data.csv,
                       filename: data.filename,
                       totalPapers: data.totalPapers,
                     });
@@ -154,34 +152,6 @@ export default function Home() {
           }
         }
       }
-
-      const remainingLines = buffer.split('\n');
-      let eventType = '';
-      for (const line of remainingLines) {
-        if (line.startsWith('event: ')) {
-          eventType = line.slice(7);
-        } else if (line.startsWith('data: ') && eventType) {
-          try {
-            const data = JSON.parse(line.slice(6));
-            if (eventType === 'complete' && data.csv) {
-              setProgress((prev) => ({
-                ...prev,
-                phase: 'complete',
-                totalPapers: data.totalPapers,
-                message: `Successfully scraped ${data.totalPapers} papers!`,
-              }));
-              setCsvData({
-                csv: data.csv,
-                filename: data.filename,
-                totalPapers: data.totalPapers,
-              });
-            }
-          } catch {
-            // Skip malformed JSON
-          }
-        }
-      }
-
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         setProgress((prev) => ({
@@ -191,20 +161,11 @@ export default function Home() {
         }));
       }
     }
-  }, [apiKey, keyword]);
+  }, [apiKey, keyword, maxPapers]);
 
   const downloadCsv = useCallback(() => {
     if (!csvData) return;
-
-    const blob = new Blob([csvData.csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = csvData.filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    window.location.href = `/api/download?file=${encodeURIComponent(csvData.filename)}`;
   }, [csvData]);
 
   const isSearching = progress.phase === 'searching' || progress.phase === 'generating';
@@ -234,21 +195,21 @@ export default function Home() {
             <Sparkles className="w-4 h-4 text-scholar-accent" />
             <span className="text-sm font-mono text-scholar-accent">Google Scholar API</span>
           </div>
-
-          <h1 className="text-4xl md:text-5xl font-mono font-bold text-scholar-text mb-4">
-            <span className="text-glow text-scholar-accent">Scholar</span> Sky
+          
+          <h1 className="text-5xl md:text-6xl font-mono font-bold text-scholar-text mb-4">
+            <span className="text-glow text-scholar-accent">Scholar</span> Scraper
           </h1>
-
-          {/* <p className="text-scholar-muted text-lg max-w-2xl mx-auto">
-            Extract up to 2,000 research papers from Google Scholar
-          </p> */}
+          
+          <p className="text-scholar-muted text-lg max-w-2xl mx-auto">
+            Extract up to 1,000 research papers from Google Scholar with beautiful progress visualization
+          </p>
         </div>
 
         {/* Main Card */}
         <div className={`bg-scholar-card/80 backdrop-blur-xl rounded-2xl border border-scholar-border p-8 relative overflow-hidden transition-all duration-700 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
           {/* Card glow effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-scholar-accent/5 via-transparent to-transparent pointer-events-none" />
-
+          
           <div className="relative space-y-6">
             {/* API Key Input */}
             <div className="space-y-2">
@@ -317,10 +278,11 @@ export default function Home() {
                     type="button"
                     onClick={() => setMaxPapers(limit)}
                     disabled={isSearching}
-                    className={`px-4 py-2 rounded-lg font-mono text-sm transition-all disabled:opacity-50 ${maxPapers === limit
-                      ? 'bg-scholar-accent text-scholar-bg glow-accent'
-                      : 'bg-scholar-bg/50 border border-scholar-border text-scholar-muted hover:border-scholar-accent/50 hover:text-scholar-text'
-                      }`}
+                    className={`px-4 py-2 rounded-lg font-mono text-sm transition-all disabled:opacity-50 ${
+                      maxPapers === limit
+                        ? 'bg-scholar-accent text-scholar-bg glow-accent'
+                        : 'bg-scholar-bg/50 border border-scholar-border text-scholar-muted hover:border-scholar-accent/50 hover:text-scholar-text'
+                    }`}
                   >
                     {limit.toLocaleString()}
                   </button>
@@ -380,7 +342,7 @@ export default function Home() {
                     <AlertCircle className="w-5 h-5 text-red-400" />
                   </div>
                 )}
-
+                
                 <div>
                   <h3 className="font-mono font-bold text-scholar-text">
                     {progress.phase === 'searching' && 'Searching Google Scholar'}
@@ -471,8 +433,8 @@ export default function Home() {
         {/* Info Cards */}
         <div className={`mt-12 grid md:grid-cols-3 gap-4 transition-all duration-700 delay-400 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           {[
-            { icon: Key, title: 'Free API Key', desc: '250 searches/mo (2,500 papers total)' },
-            { icon: Database, title: 'API Usage', desc: '1 search = 10 papers fetched' },
+            { icon: Key, title: 'Free API Key', desc: '100 searches/month free tier' },
+            { icon: Database, title: 'Up to 1,000 Papers', desc: 'Per search (10 per API call)' },
             { icon: FileText, title: 'CSV Export', desc: 'Download with all metadata' },
           ].map(({ icon: Icon, title, desc }, i) => (
             <div

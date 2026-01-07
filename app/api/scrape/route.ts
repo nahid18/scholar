@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       
       const sendEvent = (event: string, data: unknown) => {
         controller.enqueue(
-          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n\n`)
+          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
         );
       };
 
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
           });
 
           // Small delay to avoid rate limiting
-          await new Promise((resolve) => setTimeout(resolve, 300));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
         } catch (error) {
           sendEvent('error', { 
@@ -175,18 +175,30 @@ export async function POST(req: NextRequest) {
           .replace(/^_+|_+$/g, '')
           .substring(0, 50);
         const timestamp = new Date().toISOString().split('T')[0];
-        const filename = `${safeKeyword}_${timestamp}.csv`;
+        const randomId = Math.random().toString(36).substring(2, 8);
+        const filename = `${safeKeyword}_${timestamp}_${randomId}.csv`;
+
+        // Store CSV in global map for separate download endpoint
+        const globalWithCsv = globalThis as typeof globalThis & { 
+          generatedCSVs?: Map<string, string> 
+        };
+        globalWithCsv.generatedCSVs ??= new Map();
+        globalWithCsv.generatedCSVs.set(filename, csvContent);
+        
+        // Clean up old files (keep last 100)
+        if (globalWithCsv.generatedCSVs.size > 100) {
+          const firstKey = globalWithCsv.generatedCSVs.keys().next().value;
+          if (firstKey) globalWithCsv.generatedCSVs.delete(firstKey);
+        }
 
         sendEvent('complete', {
           totalPapers: allPapers.length,
           filename,
-          csv: csvContent,
         });
       } else {
         sendEvent('complete', {
           totalPapers: 0,
           filename: '',
-          csv: '',
           message: 'No papers found for this search query.',
         });
       }
