@@ -45,7 +45,7 @@ export default function Home() {
   const [maxPapers, setMaxPapers] = useState(100);
   const abortControllerRef = useRef<AbortController | null>(null);
   
-  const paperLimitOptions = [10, 100, 250, 500, 1000];
+  const paperLimitOptions = [10, 250, 500, 1000, 2500];
 
   useEffect(() => {
     setMounted(true);
@@ -197,12 +197,12 @@ export default function Home() {
           </div>
           
           <h1 className="text-5xl md:text-6xl font-mono font-bold text-scholar-text mb-4">
-            <span className="text-glow text-scholar-accent">Scholar</span> Scraper
+            <span className="text-glow text-scholar-accent">Scholar</span> Sky
           </h1>
           
-          <p className="text-scholar-muted text-lg max-w-2xl mx-auto">
+          {/* <p className="text-scholar-muted text-lg max-w-2xl mx-auto">
             Extract up to 1,000 research papers from Google Scholar with beautiful progress visualization
-          </p>
+          </p> */}
         </div>
 
         {/* Main Card */}
@@ -433,8 +433,8 @@ export default function Home() {
         {/* Info Cards */}
         <div className={`mt-12 grid md:grid-cols-3 gap-4 transition-all duration-700 delay-400 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           {[
-            { icon: Key, title: 'Free API Key', desc: '100 searches/month free tier' },
-            { icon: Database, title: 'Up to 1,000 Papers', desc: 'Per search (10 per API call)' },
+            { icon: Key, title: 'Free API Key', desc: 'Get your free SerpAPI key' },
+            { icon: Database, title: 'Up to 2,500 papers', desc: 'Per month with free API key' },
             { icon: FileText, title: 'CSV Export', desc: 'Download with all metadata' },
           ].map(({ icon: Icon, title, desc }, i) => (
             <div
