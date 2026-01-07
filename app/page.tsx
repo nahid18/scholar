@@ -45,7 +45,7 @@ export default function Home() {
   const [maxPapers, setMaxPapers] = useState(100);
   const abortControllerRef = useRef<AbortController | null>(null);
   
-  const paperLimitOptions = [10, 250, 500, 1000, 2500];
+  const paperLimitOptions = [100, 250, 500, 1000, 2500];
 
   useEffect(() => {
     setMounted(true);
